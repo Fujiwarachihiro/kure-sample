@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ジェネリック医薬品ダッシュボード</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ジェネリック医薬品ダッシュボード</h1>
+        </header>
+
+        <!-- CSVアップロードセクション -->
+        <div class="upload-section">
+            <label for="csvFile" class="upload-label">
+                <span>CSVファイルを選択</span>
+                <input type="file" id="csvFile" accept=".csv" />
+            </label>
+            <div id="uploadStatus"></div>
+        </div>
+
+        <!-- サマリーカード -->
+        <div id="summarySection" class="summary-section hidden">
+            <div class="card">
+                <h3>先発品種類数</h3>
+                <p class="card-value" id="originalCount">-</p>
+            </div>
+            <div class="card">
+                <h3>後発品種類数</h3>
+                <p class="card-value" id="genericCount">-</p>
+            </div>
+            <div class="card">
+                <h3>総数量</h3>
+                <p class="card-value" id="totalQuantity">-</p>
+            </div>
+            <div class="card">
+                <h3>平均薬価差</h3>
+                <p class="card-value" id="avgPriceDiff">-</p>
+            </div>
+        </div>
+
+        <!-- チャートセクション -->
+        <div id="chartsSection" class="charts-section hidden">
+            <!-- 後発品医薬品 使用数量トップ10 -->
+            <div class="chart-container">
+                <h2>後発品医薬品 使用数量トップ10</h2>
+                <canvas id="top10Chart"></canvas>
+            </div>
+
+            <!-- 先発品と後発品の薬価比較 -->
+            <div class="chart-container">
+                <h2>先発品と後発品の薬価比較</h2>
+                <canvas id="priceComparisonChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 後発品医薬品別 数量分布 (全幅) -->
+        <div id="distributionSection" class="distribution-section hidden">
+            <div class="chart-container-full">
+                <h2>後発品医薬品別 数量分布</h2>
+                <canvas id="quantityDistributionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 詳細テーブル -->
+        <div id="tableSection" class="table-section hidden">
+            <h2>詳細データテーブル</h2>
+            <div class="table-controls">
+                <input type="text" id="searchInput" placeholder="検索...">
+                <select id="itemsPerPage">
+                    <option value="10">10件</option>
+                    <option value="25" selected>25件</option>
+                    <option value="50">50件</option>
+                    <option value="100">100件</option>
+                </select>
+            </div>
+            <div class="table-wrapper">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>年月</th>
+                            <th>先発医薬品名</th>
+                            <th>先発医薬品薬価</th>
+                            <th>後発医薬品名</th>
+                            <th>後発医薬品薬価</th>
+                            <th>数量</th>
+                            <th>単位</th>
+                            <th>薬価差</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                <button id="prevPage">前へ</button>
+                <span id="pageInfo"></span>
+                <button id="nextPage">次へ</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

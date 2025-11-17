@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>呉市国民健康保険 - ジェネリック医薬品使用状況ダッシュボード</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 呉市国民健康保険</h1>
+            <h2>ジェネリック医薬品使用状況ダッシュボード</h2>
+        </header>
+
+        <div class="settings-panel">
+            <div class="input-group">
+                <label for="apiToken">アクセストークン:</label>
+                <input type="password" id="apiToken" placeholder="ecp-api-tokenを入力してください">
+                <button onclick="toggleTokenVisibility()" class="toggle-btn">👁️</button>
+            </div>
+            
+            <div class="input-group">
+                <label for="yearMonth">集計月:</label>
+                <input type="month" id="yearMonth" value="2025-02">
+            </div>
+            <div class="input-group">
+                <label for="displayMode">後発品表示:</label>
+                <select id="displayMode">
+                    <option value="cheapest">最安のみ</option>
+                    <option value="all">全て</option>
+                    <option value="topn">トップN（数量）</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="topN">N (トップ数):</label>
+                <input type="number" id="topN" value="10" min="1" style="width:100px">
+            </div>
+
+            <button onclick="fetchData()" class="fetch-btn">データ取得</button>
+            <button onclick="exportCSV()" class="fetch-btn" style="background:#4caf50">CSVエクスポート</button>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+        <div id="loadingMessage" class="loading-message" style="display: none;">
+            データを読み込み中...
+        </div>
+
+        <div id="dashboard" style="display: none;">
+            <!-- サマリーカード -->
+            <div class="summary-cards">
+                <div class="card">
+                    <div class="card-title">先発品医薬品種類</div>
+                    <div class="card-value" id="originalDrugCount">-</div>
+                    <div class="card-unit">種類</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">後発品医薬品種類</div>
+                    <div class="card-value" id="genericDrugCount">-</div>
+                    <div class="card-unit">種類</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">後発品使用率</div>
+                    <div class="card-value" id="genericUsageRate">-</div>
+                    <div class="card-unit">%</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">総数量</div>
+                    <div class="card-value" id="totalQuantity">-</div>
+                    <div class="card-unit">単位</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">平均価格差</div>
+                    <div class="card-value" id="averagePriceDiff">-</div>
+                    <div class="card-unit">円</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">総推定削減額</div>
+                    <div class="card-value" id="totalEstimatedSavings">-</div>
+                    <div class="card-unit">円</div>
+                </div>
+            </div>
+
+            <!-- グラフセクション -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>後発品医薬品 使用数量トップ10</h3>
+                    <canvas id="quantityChart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h3>先発品と後発品の薬価比較</h3>
+                    <canvas id="priceComparisonChart"></canvas>
+                </div>
+                
+                <div class="chart-card full-width">
+                    <h3>後発品医薬品別 数量分布</h3>
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- データテーブル -->
+            <div class="table-card">
+                <h3>詳細データ</h3>
+                <div class="table-container">
+                    <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>先発品医薬品名</th>
+                                <th>先発品薬価</th>
+                                <th>後発品医薬品名</th>
+                                <th>後発品薬価</th>
+                                <th>数量</th>
+                                <th>単位</th>
+                                <th>薬価差</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
